@@ -40,7 +40,7 @@ python main.py
 ```
 ## 4. Preview
 - Front page: $\newline$
-![Front Page]()
+![Front Page](screenshots/fashionist_front.png)
 
 - Result page: $\newline$
-![Result Page]()
+![Result Page](screenshots/fashionist_results.png)
