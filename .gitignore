@@ -1,0 +1,6 @@
+static/faiss_index.index
+reports/
+static/img/
+fashion-visual-search/
+inference_graph/
+models/

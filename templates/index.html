@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Fashionist - Upload{% endblock %}
+
+{% block content %}
+    <section class="upload-section">
+        <h2>Find Similar Clothes</h2>
+        <p>Upload an image to find similar fashion items</p>
+        <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="upload-box" id="uploadBox">
+                <label>
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                    </svg>
+                    <p>Click or drag image here</p>
+                    <input type="file" name="file" accept="image/*" required>
+                </label>
+            </div>
+            <img id="preview" class="preview-image" alt="Preview">
+            <div class="upload-controls">
+                <div class="upload-again" id="uploadAgain">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3v12M7 8l5-5l5 5M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1" />
+                    </svg>
+                    Upload Another
+                </div>
+                <button type="submit" id="submitBtn">
+                    <span class="button-text">Proceed</span>
+                    <span class="button-loading" style="display: none;">
+                        <div class="button-spinner"></div>
+                        Processing...
+                    </span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14m-7-7l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const buttonText = submitBtn.querySelector('.button-text');
+    const buttonLoading = submitBtn.querySelector('.button-loading');
+    
+    buttonText.style.display = 'none';
+    buttonLoading.style.display = 'flex';
+    submitBtn.disabled = true;
+});
+</script>
+{% endblock %}

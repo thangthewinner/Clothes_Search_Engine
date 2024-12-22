@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Fashionist - Results{% endblock %}
+
+{% block content %}
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Finding similar items...</div>
+    </div>
+
+    <!-- Add uploaded image section with fashion.html styling -->
+    <section class="upload-section">
+        <h2>Your Upload</h2>
+        <div class="image-toggle-container">
+            <div class="toggle-buttons">
+                <button class="toggle-btn active" data-view="cropped">Cropped</button>
+                <button class="toggle-btn" data-view="original">Original</button>
+            </div>
+            <div class="modal-image-container">
+                <img src="{{ image_path }}" alt="Cropped Image" class="modal-image show" id="croppedImage">
+                <img src="{{ original_image_path }}" alt="Original Image" class="modal-image" id="originalImage">
+            </div>
+        </div>
+    </section>
+
+    <!-- Similar images grid -->
+    <section class="results-grid">
+        {% for img, score in zip(similar_image_paths, similarity_scores) %}
+        <div class="result-card">
+            <div class="similarity-badge">{{ score | round(2) }}%</div>
+            <img class="card-img" 
+                 src="{{ img }}" 
+                 alt="Similar Fashion Item"
+                 data-similarity="{{ score }}">
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Upload again button with fashion.html styling -->
+    <section class="upload-section" style="text-align: center;">
+        <a href="{{ url_for('upload_again') }}" class="upload-again">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 3v12M7 8l5-5l5 5M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/>
+            </svg>
+            Upload Another Image
+        </a>
+    </section>
+{% endblock %}
+
+{% block modal %}
+<div class="image-modal" id="imageModal">
+    <!-- Remove or adjust the modal overlay if not needed -->
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-similarity" id="modalSimilarity"></div>
+            <div class="modal-close">&times;</div>
+        </div>
+        <img id="modalImage" src="" alt="Enlarged view">
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Show loading on page load
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    // Hide loading when all images are loaded
+    const allImages = document.querySelectorAll('.card-img');
+    let loadedImages = 0;
+
+    function hideLoading() {
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 300);
+    }
+
+    allImages.forEach(img => {
+        if (img.complete) {
+            loadedImages++;
+            if (loadedImages === allImages.length) hideLoading();
+        } else {
+            img.addEventListener('load', () => {
+                loadedImages++;
+                if (loadedImages === allImages.length) hideLoading();
+            });
+        }
+    });
+
+    // Toggle functionality
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const croppedImage = document.getElementById('croppedImage');
+    const originalImage = document.getElementById('originalImage');
+
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const view = btn.dataset.view;
+            
+            // Update buttons
+            toggleBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Update images
+            if (view === 'cropped') {
+                croppedImage.classList.add('show');
+                originalImage.classList.remove('show');
+            } else {
+                originalImage.classList.add('show');
+                croppedImage.classList.remove('show');
+            }
+        });
+    });
+
+    const cards = document.querySelectorAll('.result-card');
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalClose = document.querySelector('.modal-close');
+    const modalSimilarity = document.getElementById('modalSimilarity');
+
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            const img = card.querySelector('.card-img');
+            const similarity = img.dataset.similarity;
+            openModal(img.src, similarity);
+        });
+    });
+
+    function openModal(imageSrc, similarity) {
+        modalImage.src = imageSrc;
+        modalSimilarity.textContent = `${Math.round(similarity)}% Similar`;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+});
+</script>
+{% endblock %}
