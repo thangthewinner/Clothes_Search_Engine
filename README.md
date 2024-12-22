@@ -1,21 +1,21 @@
 # Clothes_Search_Engine
 
 ## 1. Project Overview
-The Clothes Search Engine project is a web application designed to help people can find similar clothes to the input clothes.
+The Clothes Search Engine project is a web application designed to help people find clothes that are similar to the input clothes.
 
 ## 2. Project Components
 ### 2.1. DeepFashion Dataset
 - Link dataset: https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html.
 
 ### 2.2. Detection Model
-- Use a clothes detection model from existing project on GitHub. 
+- Use a clothes detection model from the existing project on GitHub. 
     - Link: https://github.com/TanThinNguyen/fashion-visual-search.
 
-### 2.3. Project pipeline
-- Using **Detection Model** to get the clothes in the image then crop the clothe has highest detection score.
-- Using **ResNet50** neurol network to extract features from the image and save to a **.npy** file.
+### 2.3. Project Pipeline
+- Using **Detection Model** to get the clothes in the image and then crop the clothes that have the highest detection score.
+- Using **ResNet50** neural network to extract features from the image and save to a **.npy** file.
 - Using **FAISS(Facebook AI Similarity Search)** to save all **.npy** file to search.
-- Buiding User Interface.
+- Building User Interface.
 
 ## 3. Getting started
 ### 3.1. Requirements
@@ -39,8 +39,8 @@ Main libraries:
 python main.py 
 ```
 ## 4. Preview
-- Front page: $\newline$
+- Front Page: $\newline$
 ![Front Page](screenshots/fashionist_front.png)
 
-- Result page: $\newline$
+- Result Page: $\newline$
 ![Result Page](screenshots/fashionist_results.png)
